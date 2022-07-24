@@ -3,6 +3,7 @@ const testArea = document.querySelector("#test-area");
 const originText = document.querySelector("#origin-text p").innerText;
 const resetButton = document.querySelector("#reset");
 const theTimer = document.querySelector(".timer");
+const result = document.querySelector(".hidden");
 
 var timer = [0,0,0,0];
 var interval;
@@ -27,11 +28,35 @@ function runTimer() {
     timer[2] = Math.floor(timer[3] - (timer[1] * 100) - (timer[0] * 6000));
 }
 
+function getMatchLength(a, b) {
+    const len = Math.min(a.length, b.length);
+    let match = 0;
+    for (let i = 0; i < len; i++) {
+        match += a[i] === b[i] ? 1 : 0;
+    }
+    return match;
+}
+
+let keyStrokes = 0;
+
+const ignoreKeysList = ["Shift", "CapsLock", "Backspace", "Tab", "Control", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
+
 // Match the text entered with the provided text on the page:
-function spellCheck() {
+function spellCheck(e) {
+    console.log(e.key);
+    if (ignoreKeysList.findIndex((key) => {
+        return key === e.key;
+    }) != -1) {
+        return;
+    }
+    console.log(result.classList);
+    if (result.classList.contains('hidden')) {
+        result.classList.remove('hidden');
+    } 
+    keyStrokes += 1;
     let textEntered = testArea.value;
     let originTextMatch = originText.substring(0,textEntered.length);
-    // console.log(textEntered, originTextMatch);
+    result.innerHTML = "Accuracy: " + Math.min(100, (getMatchLength(textEntered, originTextMatch) / keyStrokes * 100)).toFixed(2);
     if (textEntered == originText) {
         clearInterval(interval);
         testWrapper.style.borderColor = "#429890";
@@ -52,7 +77,6 @@ function start() {
         timerRunning = true;
         interval = setInterval(runTimer, 10);
     }
-    // console.log(textEnterdLength);
 }
 
 // Reset everything:
@@ -61,6 +85,8 @@ function reset() {
     interval = null;
     timer = [0,0,0,0];
     timerRunning = false;
+    keyStrokes = 0;
+    result.classList.add('hidden');
 
     testArea.value = "";
     theTimer.innerHTML = "00:00:00";
