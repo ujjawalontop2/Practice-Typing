@@ -1,6 +1,6 @@
 const testWrapper = document.querySelector(".test-wrapper");
 const testArea = document.querySelector("#test-area");
-const originText = document.querySelector("#origin-text p").innerHTML;
+const originText = document.querySelector("#origin-text p").innerText;
 const resetButton = document.querySelector("#reset");
 const theTimer = document.querySelector(".timer");
 
@@ -31,7 +31,7 @@ function runTimer() {
 function spellCheck() {
     let textEntered = testArea.value;
     let originTextMatch = originText.substring(0,textEntered.length);
-
+    // console.log(textEntered, originTextMatch);
     if (textEntered == originText) {
         clearInterval(interval);
         testWrapper.style.borderColor = "#429890";
@@ -52,7 +52,7 @@ function start() {
         timerRunning = true;
         interval = setInterval(runTimer, 10);
     }
-    console.log(textEnterdLength);
+    // console.log(textEnterdLength);
 }
 
 // Reset everything:
